@@ -113,12 +113,16 @@ body {
   font-family: var(--font-marathi), var(--font-body);
   background-color: var(--bg-app);
   background-image: var(--bg-mesh);
-  background-attachment: fixed;
+  /* background-attachment: fixed removed — causes severe scroll jitter on iOS/Android */
+  background-attachment: scroll;
   color: var(--text-main);
   min-height: 100vh;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+  /* Smooth momentum scrolling on iOS */
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
   transition: background-color var(--transition-normal), color var(--transition-normal);
 }
 
@@ -746,7 +750,8 @@ body.theme-dark .perforated-ticket {
 
 body {
   -webkit-tap-highlight-color: transparent;
-  overscroll-behavior-y: contain;
+  /* overscroll-behavior-y: contain removed — blocks iOS momentum/elastic scrolling */
+  overscroll-behavior-y: auto;
 }
 
 /* Floating In-App Install Banner */
@@ -956,11 +961,12 @@ body {
     0 25px 80px rgba(0, 0, 0, 0.85);
   border: 1px solid rgba(255, 255, 255, 0.1);
   position: relative;
-  /* Scroll happens INSIDE the phone, not the page */
+  /* On desktop simulator: scroll inside phone shell */
   overflow-y: auto;
   overflow-x: hidden;
   flex-shrink: 0;
-  scrollbar-width: none; /* hide scrollbar inside phone */
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
 }
 .app-wrapper.mode-phone::-webkit-scrollbar { display: none; }
 
@@ -1157,9 +1163,20 @@ body.theme-dark .app-wrapper.mode-phone .role-segmented-control.full-width-mobil
    📱 Real Mobile Devices (Screens <= 768px)
    ========================================================================== */
 @media (max-width: 768px) {
-  html, body {
+  html {
     overflow-x: hidden !important;
     width: 100% !important;
+    /* Allow native page scroll on mobile */
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  body {
+    overflow-x: hidden !important;
+    width: 100% !important;
+    /* Allow natural page scroll — do NOT set overflow-y: hidden */
+    -webkit-overflow-scrolling: touch !important;
+    touch-action: pan-y !important;
   }
 
   .phone-stage {
@@ -1182,6 +1199,9 @@ body.theme-dark .app-wrapper.mode-phone .role-segmented-control.full-width-mobil
     min-height: 100dvh !important;
     height: auto !important;
     overflow-x: hidden !important;
+    /* On real mobile, let the PAGE scroll — not the container */
+    overflow-y: visible !important;
+    -webkit-overflow-scrolling: unset !important;
   }
 
   .view-mode-selector-bar {

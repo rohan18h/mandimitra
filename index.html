@@ -27,7 +27,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
 
   <!-- Ultra-Glossy Glassmorphic Design System -->
-  <link rel="stylesheet" href="./static/css/glossy-theme.css?v=2.2.0">
+  <link rel="stylesheet" href="./static/css/glossy-theme.css?v=2.3.0">
 
   <!-- React 18 & Babel Standalone CDNs for instant, fast, zero-build rendering -->
   <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
@@ -51,13 +51,13 @@
   <div id="root"></div>
 
   <!-- Glossy React 18 Mobile Application Script -->
-  <script type="text/babel" src="./static/js/reactApp.jsx?v=2.2.0"></script>
+  <script type="text/babel" src="./static/js/reactApp.jsx?v=2.3.0"></script>
 
   <!-- Service Worker Registration for Offline Mobile App -->
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function() {
-        navigator.serviceWorker.register('./sw.js?v=2.2.0')
+        navigator.serviceWorker.register('./sw.js?v=2.3.0')
           .then(function(reg) {
             reg.update();
             console.log('🌾 MandiMitra Mobile PWA active. Scope:', reg.scope);

@@ -3,7 +3,7 @@
  * Enables instant offline loading for farmers in remote rural APMC mandis.
  */
 
-const CACHE_NAME = 'mandimitra-v2.2.0';
+const CACHE_NAME = 'mandimitra-v2.3.0';
 
 const PRECACHE_ASSETS = [
   './',
@@ -26,7 +26,7 @@ self.addEventListener('install', (event) => {
   self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      console.log('[ServiceWorker] Pre-caching v2.2.0');
+      console.log('[ServiceWorker] Pre-caching v2.3.0');
       return cache.addAll(PRECACHE_ASSETS.map(url => new Request(url, { cache: 'reload' }))).catch(err => {
         console.warn('[ServiceWorker] Pre-cache warning:', err);
       });
