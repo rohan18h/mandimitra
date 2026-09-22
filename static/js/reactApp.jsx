@@ -463,32 +463,81 @@ function MandiMitraApp() {
     <div style={{ minHeight: '100vh', position: 'relative' }}>
       {/* 📱 SIH Prototype Preview & Device View Selector Bar */}
       <div className="view-mode-selector-bar">
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <span style={{ fontSize: '12px', color: '#fbbf24', fontWeight: 800 }}>
-            🌾 SIH 2026 Prototype
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+          <span style={{ fontSize: '13px', color: '#fbbf24', fontWeight: 800 }}>
+            🌾 MandiMitra Prototype
           </span>
-          <span style={{ fontSize: '11px', color: '#cbd5e1' }}>
-            ({lang === 'mr' ? 'थेट वेब ॲप — डाऊनलोडची आवश्यकता नाही' : (lang === 'hi' ? 'सीधा वेब ऐप — बिना किसी डाउनलोड' : 'Live Interactive Web App — No Download Required')})
-          </span>
+          <div style={{ display: 'inline-flex', gap: '4px' }}>
+            <button
+              className={`view-mode-btn ${viewMode === 'phone' ? 'active' : ''}`}
+              onClick={() => setViewMode('phone')}
+              title="Standard Mobile Phone Simulator (425px)"
+            >
+              📱 {lang === 'mr' ? 'मोबाईल ॲप' : (lang === 'hi' ? 'मोबाइल ऐप' : 'Mobile Simulator')}
+            </button>
+            <button
+              className={`view-mode-btn ${viewMode === 'desktop' ? 'active' : ''}`}
+              onClick={() => setViewMode('desktop')}
+              title="Full Web Portal View"
+            >
+              💻 {lang === 'mr' ? 'वेब पोर्टल' : (lang === 'hi' ? 'वेब पोर्टल' : 'Full Web Portal')}
+            </button>
+          </div>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-          <span style={{ fontSize: '12px', color: '#94a3b8', fontWeight: 700 }}>
-            {lang === 'mr' ? 'दृश्य निवडा:' : (lang === 'hi' ? 'दृश्य चुनें:' : 'Preview Mode:')}
-          </span>
-          <button
-            className={`view-mode-btn ${viewMode === 'phone' ? 'active' : ''}`}
-            onClick={() => setViewMode('phone')}
-            title="Mobile App Simulator View"
-          >
-            📱 {lang === 'mr' ? 'मोबाईल ॲप दृश्य' : (lang === 'hi' ? 'मोबाइल ऐप दृश्य' : 'Mobile App View')}
-          </button>
-          <button
-            className={`view-mode-btn ${viewMode === 'desktop' ? 'active' : ''}`}
-            onClick={() => setViewMode('desktop')}
-            title="Full Web Portal View"
-          >
-            💻 {lang === 'mr' ? 'वेब पोर्टल' : (lang === 'hi' ? 'वेब पोर्टल' : 'Full Web Portal')}
-          </button>
+
+        {/* Global Direct Role & Language Quick Switcher in Top Bar */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+            <span style={{ fontSize: '11px', color: '#94a3b8', fontWeight: 700 }}>
+              {lang === 'mr' ? 'भूमिका:' : (lang === 'hi' ? 'भूमिका:' : 'Role:')}
+            </span>
+            <button
+              className={`view-mode-btn ${role === 'farmer' ? 'active' : ''}`}
+              onClick={() => { setRole('farmer'); setFarmerSubView('home'); }}
+              style={{ padding: '4px 8px', fontSize: '11px' }}
+            >
+              👨‍🌾 {t('farmerRole')}
+            </button>
+            <button
+              className={`view-mode-btn ${role === 'staff' ? 'active' : ''}`}
+              onClick={() => setRole('staff')}
+              style={{ padding: '4px 8px', fontSize: '11px' }}
+            >
+              🏢 {t('staffRole')}
+            </button>
+            <button
+              className={`view-mode-btn ${role === 'admin' ? 'active' : ''}`}
+              onClick={() => setRole('admin')}
+              style={{ padding: '4px 8px', fontSize: '11px' }}
+            >
+              🏛️ {t('adminRole')}
+            </button>
+          </div>
+
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
+            {[
+              { code: 'en', label: 'English' },
+              { code: 'mr', label: 'मराठी' },
+              { code: 'hi', label: 'हिन्दी' }
+            ].map(item => (
+              <button
+                key={item.code}
+                onClick={() => setLang(item.code)}
+                style={{
+                  padding: '3px 8px',
+                  borderRadius: '12px',
+                  border: '1px solid rgba(255,255,255,0.18)',
+                  fontSize: '11px',
+                  fontWeight: 700,
+                  background: lang === item.code ? 'var(--accent-gold)' : 'rgba(255,255,255,0.06)',
+                  color: lang === item.code ? '#ffffff' : '#cbd5e1',
+                  cursor: 'pointer'
+                }}
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -530,7 +579,7 @@ function MandiMitraApp() {
         {/* Floating Glass Navigation Bar */}
         <header className="floating-navbar">
           <div className="navbar-glass-container">
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <div className="navbar-header-row">
               <a href="#" className="brand-badge" onClick={(e) => { e.preventDefault(); setFarmerSubView('home'); }}>
                 <div className="brand-icon-gem">🌾</div>
                 <div>
@@ -538,10 +587,38 @@ function MandiMitraApp() {
                   <span style={{ fontWeight: 800 }}>Mitra</span>
                 </div>
               </a>
+
+              {/* Language Switcher & Theme Controls */}
+              <div className="navbar-controls-group">
+                <div className="lang-switcher-pill">
+                  {[
+                    { code: 'en', label: 'EN' },
+                    { code: 'mr', label: 'मराठी' },
+                    { code: 'hi', label: 'हिन्दी' }
+                  ].map(item => (
+                    <button
+                      key={item.code}
+                      onClick={() => setLang(item.code)}
+                      className={`lang-pill-btn ${lang === item.code ? 'active' : ''}`}
+                      title={`Switch language to ${item.label}`}
+                    >
+                      {item.label}
+                    </button>
+                  ))}
+                </div>
+
+                <button
+                  className="theme-toggle-btn"
+                  onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
+                  title="Toggle Theme"
+                >
+                  {theme === 'light' ? '🌙' : '☀️'}
+                </button>
+              </div>
             </div>
 
-            {/* Role Switcher */}
-            <div className="role-segmented-control">
+            {/* Role Switcher Full Width on Phone & Responsive on Desktop */}
+            <div className="role-segmented-control full-width-mobile">
               <button className={`role-tab-btn ${role === 'farmer' ? 'active' : ''}`} onClick={() => setRole('farmer')}>
                 👨‍🌾 {t('farmerRole')}
               </button>
@@ -550,57 +627,6 @@ function MandiMitraApp() {
               </button>
               <button className={`role-tab-btn ${role === 'admin' ? 'active' : ''}`} onClick={() => setRole('admin')}>
                 🏛️ {t('adminRole')}
-              </button>
-            </div>
-
-            {/* Header Controls */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              {/* Language Switcher with English First */}
-              <div style={{ display: 'inline-flex', background: 'rgba(0,0,0,0.08)', borderRadius: 'var(--radius-pill)', padding: '2px', border: '1px solid rgba(255,255,255,0.15)' }}>
-                {[
-                  { code: 'en', label: 'English' },
-                  { code: 'mr', label: 'मराठी' },
-                  { code: 'hi', label: 'हिन्दी' }
-                ].map(item => (
-                  <button
-                    key={item.code}
-                    onClick={() => setLang(item.code)}
-                    style={{
-                      padding: '4px 10px',
-                      borderRadius: 'var(--radius-pill)',
-                      border: 'none',
-                      fontSize: '12px',
-                      fontWeight: 700,
-                      background: lang === item.code ? 'var(--accent-gold)' : 'transparent',
-                      color: lang === item.code ? '#ffffff' : 'var(--text-dim)',
-                      cursor: 'pointer',
-                      transition: 'all 0.2s ease'
-                    }}
-                    title={`Switch language to ${item.label}`}
-                  >
-                    {item.label}
-                  </button>
-                ))}
-              </div>
-
-              {/* Dark / Light Toggle */}
-              <button
-                className="btn-glass"
-                onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
-                style={{ width: '36px', height: '36px', borderRadius: '50%', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-                title="Toggle Theme"
-              >
-                {theme === 'light' ? '🌙' : '☀️'}
-              </button>
-
-              {/* Voice Pill Button */}
-              <button
-                className="btn-core btn-gold"
-                onClick={() => setIsVoiceOpen(true)}
-                style={{ padding: '6px 14px', fontSize: '13px' }}
-              >
-                <Icons.Mic />
-                <span>{lang === 'mr' ? 'विचारा' : (lang === 'hi' ? 'बोलें' : 'Voice')}</span>
               </button>
             </div>
           </div>
