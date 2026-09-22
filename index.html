@@ -2,11 +2,24 @@
 <html lang="mr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-  <title>MandiMitra (मंडीमित्र) — Top-Notch Glossy React UI | SIH26032</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+  <title>MandiMitra (मंडीमित्र) — Farmer Procurement Mobile App | SIH26032</title>
   <meta name="description" content="मंडीमित्र: खरेदी केंद्रावर जाण्यापूर्वी माहिती घ्या, योग्य वेळ निवडा आणि गर्दीत न ताटकळता टोकन आरक्षित करा. SIH26032 Farmer Procurement Solution.">
-  <meta name="keywords" content="MandiMitra, React 18, Glassmorphism, SIH26032, Farmers, MSP Procurement, APMC, Maharashtra, NAFED, Marathi Voice Assistant">
+  <meta name="keywords" content="MandiMitra, React 18, PWA, Mobile App, SIH26032, Farmers, MSP Procurement, APMC, Maharashtra, NAFED, Marathi Voice Assistant">
+  
+  <!-- Web App Manifest & Mobile Theme -->
+  <link rel="manifest" href="./manifest.json">
   <meta name="theme-color" content="#0f2942">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="application-name" content="MandiMitra">
+
+  <!-- Apple iOS Mobile App Tags -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="MandiMitra">
+  <link rel="apple-touch-icon" href="./static/icons/icon-192.png">
+  <link rel="icon" type="image/svg+xml" href="./static/icons/icon-192.svg">
+  <link rel="icon" type="image/png" href="./static/icons/icon-192.png">
 
   <!-- Google Fonts: Noto Sans Devanagari (Marathi) & Outfit / Inter (English) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -37,7 +50,22 @@
   <!-- React 18 Root Mounting Point -->
   <div id="root"></div>
 
-  <!-- Glossy React 18 Application Script -->
+  <!-- Glossy React 18 Mobile Application Script -->
   <script type="text/babel" src="./static/js/reactApp.jsx"></script>
+
+  <!-- Service Worker Registration for Offline Mobile App -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('./sw.js')
+          .then(function(reg) {
+            console.log('🌾 MandiMitra Mobile PWA active. Scope:', reg.scope);
+          })
+          .catch(function(err) {
+            console.log('MandiMitra ServiceWorker notice:', err);
+          });
+      });
+    }
+  </script>
 </body>
 </html>

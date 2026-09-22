@@ -420,6 +420,40 @@ function MandiMitraApp() {
   const [isVoiceOpen, setIsVoiceOpen] = useState(false);
   const [toast, setToast] = useState(null);
 
+  // 📱 Mobile PWA Installation & Haptics
+  const [installPrompt, setInstallPrompt] = useState(null);
+  const [isInstalled, setIsInstalled] = useState(false);
+
+  useEffect(() => {
+    const handleBeforeInstall = (e) => {
+      e.preventDefault();
+      setInstallPrompt(e);
+    };
+    window.addEventListener('beforeinstallprompt', handleBeforeInstall);
+    if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
+      setIsInstalled(true);
+    }
+    return () => window.removeEventListener('beforeinstallprompt', handleBeforeInstall);
+  }, []);
+
+  const handleInstallClick = () => {
+    if (installPrompt) {
+      installPrompt.prompt();
+      installPrompt.userChoice.then((choiceResult) => {
+        if (choiceResult.outcome === 'accepted') {
+          showToast(lang === 'mr' ? '🌾 मंडीमित्र ॲप इन्स्टॉल झाले!' : '🌾 MandiMitra App Installed!');
+          setInstallPrompt(null);
+        }
+      });
+    }
+  };
+
+  const triggerHaptic = (ms = 15) => {
+    if (typeof navigator !== 'undefined' && navigator.vibrate) {
+      try { navigator.vibrate(ms); } catch (e) {}
+    }
+  };
+
   // Sync Python API
   useEffect(() => {
     fetch('/api/centres').then(r => r.json()).then(d => { if (Array.isArray(d)) setCentres(d); }).catch(() => {});
@@ -546,6 +580,26 @@ function MandiMitraApp() {
 
       {/* Main Workspace Layout */}
       <main style={{ maxWidth: '1280px', margin: '0 auto', padding: '24px 16px 80px', position: 'relative', zIndex: 1 }}>
+        {/* 📱 PWA Install Banner */}
+        {installPrompt && !isInstalled && (
+          <div className="mobile-install-banner">
+            <div className="mobile-install-info">
+              <img src="./static/icons/icon-192.png" alt="MandiMitra" className="mobile-install-icon" />
+              <div>
+                <div className="mobile-install-title">
+                  {lang === 'mr' ? '🌾 मंडीमित्र मोबाईल ॲप' : (lang === 'hi' ? '🌾 मंडीमित्र मोबाइल ऐप' : '🌾 MandiMitra Mobile App')}
+                </div>
+                <div className="mobile-install-desc">
+                  {lang === 'mr' ? 'ऑफलाईन वापर आणि थेट होम स्क्रीनवरून बुकिंगसाठी इन्स्टॉल करा' : (lang === 'hi' ? 'ऑफलाइन उपयोग व त्वरित बुकिंग हेतु इंस्टॉल करें' : 'Install for offline access & instant home screen booking')}
+                </div>
+              </div>
+            </div>
+            <button className="mobile-install-btn" onClick={handleInstallClick}>
+              📲 {lang === 'mr' ? 'इन्स्टॉल करा' : (lang === 'hi' ? 'इंस्टॉल करें' : 'Install App')}
+            </button>
+          </div>
+        )}
+
         {role === 'farmer' && (
           <FarmerExperience
             t={t}
@@ -645,6 +699,71 @@ function MandiMitraApp() {
           <strong style={{ fontSize: '14px' }}>{toast.text}</strong>
         </div>
       )}
+
+      {/* 📱 Mobile-Native Bottom Navigation Bar */}
+      <nav className="mobile-bottom-nav">
+        <button
+          className={`mobile-nav-btn ${(role === 'farmer' && farmerSubView === 'home') ? 'active' : ''}`}
+          onClick={() => {
+            triggerHaptic(12);
+            setRole('farmer');
+            setFarmerSubView('home');
+          }}
+        >
+          <Icons.Building />
+          <span>{lang === 'mr' ? 'मुख्य' : (lang === 'hi' ? 'मुख्य' : 'Home')}</span>
+        </button>
+
+        <button
+          className={`mobile-nav-btn ${(role === 'farmer' && farmerSubView === 'centres') ? 'active' : ''}`}
+          onClick={() => {
+            triggerHaptic(12);
+            setRole('farmer');
+            setFarmerSubView('centres');
+          }}
+        >
+          <Icons.MapPin />
+          <span>{lang === 'mr' ? 'केंद्रे' : (lang === 'hi' ? 'केंद्र' : 'Centres')}</span>
+        </button>
+
+        <button
+          className="mobile-nav-btn nav-mic-btn"
+          onClick={() => {
+            triggerHaptic(28);
+            setIsVoiceOpen(true);
+          }}
+          title={lang === 'mr' ? 'व्हॉइस असिस्टंट' : 'Voice Assistant'}
+        >
+          <div className="mic-bubble">
+            <Icons.Mic />
+          </div>
+          <span>{lang === 'mr' ? 'विचारा' : (lang === 'hi' ? 'बोलें' : 'Voice')}</span>
+        </button>
+
+        <button
+          className={`mobile-nav-btn ${(role === 'farmer' && farmerSubView === 'token') ? 'active' : ''}`}
+          onClick={() => {
+            triggerHaptic(12);
+            setRole('farmer');
+            setFarmerSubView('token');
+          }}
+        >
+          <Icons.Ticket />
+          <span>{lang === 'mr' ? 'टोकन पास' : (lang === 'hi' ? 'टोकन' : 'Pass')}</span>
+        </button>
+
+        <button
+          className={`mobile-nav-btn ${(role === 'farmer' && farmerSubView === 'track') ? 'active' : ''}`}
+          onClick={() => {
+            triggerHaptic(12);
+            setRole('farmer');
+            setFarmerSubView('track');
+          }}
+        >
+          <Icons.Scale />
+          <span>{lang === 'mr' ? 'स्थिती' : (lang === 'hi' ? 'स्थिति' : 'Track')}</span>
+        </button>
+      </nav>
     </div>
   );
 }

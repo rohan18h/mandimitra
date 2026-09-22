@@ -1,0 +1,81 @@
+{
+  "name": "MandiMitra — Farmer Procurement Platform (मंडीमित्र)",
+  "short_name": "MandiMitra",
+  "description": "बोलून विचारा. योग्य वेळ जाणून घ्या. खात्रीने जा. Capacity-aware procurement slot booking and Marathi/Hindi voice assistant for Maharashtra farmers.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#071524",
+  "theme_color": "#0f2942",
+  "orientation": "portrait-primary",
+  "lang": "mr",
+  "categories": [
+    "productivity",
+    "government",
+    "utilities"
+  ],
+  "icons": [
+    {
+      "src": "./static/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./static/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./static/icons/icon-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "./static/icons/icon-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Book Token (टोकन आरक्षण)",
+      "short_name": "Book Token",
+      "description": "Reserve procurement slot and avoid mandi queue",
+      "url": "./index.html#book",
+      "icons": [
+        {
+          "src": "./static/icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Check Centres (खरेदी केंद्र)",
+      "short_name": "Centres",
+      "description": "View live centre status and wait times",
+      "url": "./index.html#centres",
+      "icons": [
+        {
+          "src": "./static/icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Track Produce (स्थिती ट्रॅक करा)",
+      "short_name": "Track",
+      "description": "Track weighing, moisture test, and DBT payment",
+      "url": "./index.html#track",
+      "icons": [
+        {
+          "src": "./static/icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ]
+}

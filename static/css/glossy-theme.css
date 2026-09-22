@@ -733,3 +733,196 @@ body.theme-dark .perforated-ticket {
   grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
   gap: 1.25rem;
 }
+
+/* ==========================================================================
+   📱 Mobile-Native App Layout & Bottom Navigation Bar
+   ========================================================================== */
+
+/* Mobile Safe Area & Touch Enhancements */
+:root {
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+body {
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior-y: contain;
+}
+
+/* Floating In-App Install Banner */
+.mobile-install-banner {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.22) 0%, rgba(15, 41, 66, 0.85) 100%);
+  border: 1px solid rgba(52, 211, 153, 0.4);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: var(--radius-lg);
+  padding: 12px 18px;
+  margin: 12px auto;
+  max-width: 900px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  animation: slideInDown 0.35s ease;
+}
+
+.mobile-install-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.mobile-install-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  flex-shrink: 0;
+}
+
+.mobile-install-title {
+  font-weight: 800;
+  font-size: 0.95rem;
+  color: #ffffff;
+}
+
+.mobile-install-desc {
+  font-size: 0.78rem;
+  color: #cbd5e1;
+}
+
+.mobile-install-btn {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: #ffffff;
+  border: none;
+  padding: 8px 18px;
+  border-radius: var(--radius-pill);
+  font-size: 0.82rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+  white-space: nowrap;
+  transition: transform 0.15s ease;
+}
+
+.mobile-install-btn:active {
+  transform: scale(0.94);
+}
+
+/* Mobile-First Bottom Navigation Bar (Docked) */
+.mobile-bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: calc(64px + var(--safe-bottom));
+  padding-bottom: var(--safe-bottom);
+  background: rgba(7, 21, 36, 0.92);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  display: none; /* Displayed via media query on mobile */
+  grid-template-columns: repeat(5, 1fr);
+  align-items: center;
+  z-index: 99;
+  box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.4);
+}
+
+.mobile-nav-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: #94a3b8;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 6px 2px;
+  gap: 3px;
+  cursor: pointer;
+  transition: color 0.18s ease, transform 0.18s ease;
+  position: relative;
+  width: 100%;
+}
+
+.mobile-nav-btn svg {
+  width: 22px;
+  height: 22px;
+  stroke: currentColor;
+  transition: stroke 0.18s ease, transform 0.18s ease;
+}
+
+.mobile-nav-btn.active {
+  color: #34d399;
+}
+
+.mobile-nav-btn.active svg {
+  transform: translateY(-2px);
+  filter: drop-shadow(0 0 8px rgba(52, 211, 153, 0.7));
+}
+
+.mobile-nav-btn.active::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  width: 28px;
+  height: 3px;
+  background: #34d399;
+  border-radius: 0 0 3px 3px;
+  box-shadow: 0 2px 8px rgba(52, 211, 153, 0.8);
+}
+
+.mobile-nav-btn:active {
+  transform: scale(0.92);
+}
+
+/* Floating Voice Action button in center */
+.mobile-nav-btn.nav-mic-btn {
+  color: #fbbf24;
+}
+
+.mobile-nav-btn.nav-mic-btn .mic-bubble {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: -18px;
+  box-shadow: 0 6px 20px rgba(245, 158, 11, 0.5), 0 0 0 3px #071524;
+  color: #071524;
+  transition: transform 0.15s ease;
+}
+
+.mobile-nav-btn.nav-mic-btn .mic-bubble svg {
+  stroke: #071524;
+  width: 22px;
+  height: 22px;
+}
+
+.mobile-nav-btn.nav-mic-btn:active .mic-bubble {
+  transform: scale(0.9);
+}
+
+/* Media Query: Activate Mobile Bottom Nav on screens <= 768px */
+@media (max-width: 768px) {
+  .mobile-bottom-nav {
+    display: grid;
+  }
+
+  body {
+    padding-bottom: calc(75px + var(--safe-bottom));
+  }
+
+  .nav-header-links {
+    display: none; /* Hidden on mobile in favor of bottom nav */
+  }
+
+  .app-container {
+    padding: 10px 14px;
+  }
+}
+

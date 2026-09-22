@@ -1,0 +1,27 @@
+{
+  "name": "mandimitra",
+  "version": "1.0.0",
+  "description": "MandiMitra (मंडीमित्र) — Smart Farmer Procurement & Capacity-Aware Slot Booking Platform | SIH26032",
+  "main": "index.html",
+  "scripts": {
+    "cap:sync": "cap sync android",
+    "cap:open": "cap open android",
+    "cap:build": "cap build android"
+  },
+  "dependencies": {
+    "@capacitor/android": "^6.0.0",
+    "@capacitor/cli": "^6.0.0",
+    "@capacitor/core": "^6.0.0"
+  },
+  "keywords": [
+    "mandimitra",
+    "pwa",
+    "capacitor",
+    "android",
+    "sih2026",
+    "agriculture",
+    "procurement"
+  ],
+  "author": "Rohan Handifod",
+  "license": "MIT"
+}
