@@ -773,7 +773,8 @@ function MandiMitraApp() {
           <span>{lang === 'mr' ? 'स्थिती' : (lang === 'hi' ? 'स्थिति' : 'Track')}</span>
         </button>
       </nav>
-      </div> {/* End app-wrapper */}
+        </div> {/* End app-wrapper */}
+      </div> {/* End phone-stage wrapper */}
     </div>
   );
 }
