@@ -1,0 +1,244 @@
+/* ==========================================================================
+   MandiMitra — Procurement-Centre Staff Dashboard Styles
+   ========================================================================== */
+
+.staff-layout {
+  display: flex;
+  gap: var(--space-6);
+  min-height: calc(100vh - 180px);
+}
+
+.staff-sidebar {
+  width: 260px;
+  flex-shrink: 0;
+  background-color: var(--bg-surface);
+  border-right: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  box-shadow: var(--shadow-sm);
+}
+
+.staff-nav-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  font-weight: 600;
+  font-size: var(--text-sm);
+  margin-bottom: var(--space-1);
+  transition: all var(--transition-fast);
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  width: 100%;
+  text-align: left;
+}
+
+.staff-nav-item:hover {
+  background-color: var(--bg-surface-alt);
+  color: var(--color-primary);
+}
+
+.staff-nav-item.active {
+  background-color: var(--color-primary-bg);
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+.staff-main-content {
+  flex: 1;
+  min-width: 0;
+}
+
+@media (max-width: 900px) {
+  .staff-layout {
+    flex-direction: column;
+  }
+  .staff-sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid var(--border-light);
+    display: flex;
+    overflow-x: auto;
+    gap: var(--space-2);
+    padding: var(--space-2);
+  }
+  .staff-nav-item {
+    white-space: nowrap;
+    margin-bottom: 0;
+  }
+}
+
+/* Centre Live Control Bar */
+.centre-status-bar {
+  background: var(--bg-surface);
+  border: 1.5px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  margin-bottom: var(--space-6);
+  box-shadow: var(--shadow-sm);
+}
+
+.status-toggle-group {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.status-pill-btn {
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-full);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  border: 1.5px solid var(--border-medium);
+  background: var(--bg-surface);
+  color: var(--text-secondary);
+  transition: all var(--transition-fast);
+}
+
+.status-pill-btn.active.open {
+  background-color: var(--color-success);
+  border-color: var(--color-success);
+  color: #ffffff;
+}
+
+.status-pill-btn.active.closed {
+  background-color: var(--color-danger);
+  border-color: var(--color-danger);
+  color: #ffffff;
+}
+
+.status-pill-btn.active.delayed {
+  background-color: var(--color-warning);
+  border-color: var(--color-warning);
+  color: #ffffff;
+}
+
+/* Offline Sync Queue Banner */
+.offline-sync-banner {
+  background: #fef3c7;
+  border: 1.5px solid #fcd34d;
+  border-radius: var(--radius-lg);
+  padding: var(--space-4) var(--space-5);
+  margin-bottom: var(--space-5);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  animation: pulse-sync 3s infinite ease-in-out;
+}
+
+@keyframes pulse-sync {
+  0%, 100% { border-color: #fcd34d; }
+  50% { border-color: #f59e0b; }
+}
+
+/* Arrivals Queue Management */
+.queue-table-container {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: var(--space-6);
+}
+
+.queue-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: var(--text-sm);
+}
+
+.queue-table th {
+  background-color: var(--bg-surface-alt);
+  padding: var(--space-3) var(--space-4);
+  font-weight: 700;
+  color: var(--color-primary);
+  border-bottom: 1px solid var(--border-medium);
+}
+
+.queue-table td {
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--border-light);
+  color: var(--text-primary);
+}
+
+.queue-table tr:hover td {
+  background-color: var(--color-primary-bg);
+}
+
+@media (max-width: 768px) {
+  .queue-table thead {
+    display: none;
+  }
+  .queue-table, .queue-table tbody, .queue-table tr, .queue-table td {
+    display: block;
+    width: 100%;
+  }
+  .queue-table tr {
+    margin-bottom: var(--space-4);
+    border-bottom: 2px solid var(--border-medium);
+    padding: var(--space-3);
+  }
+  .queue-table td {
+    padding: var(--space-1) 0;
+    border-bottom: none;
+  }
+}
+
+/* Quality Check Inspection Card */
+.qc-field-group {
+  background-color: var(--bg-surface-alt);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+.grade-btn-group {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.grade-btn {
+  flex: 1;
+  padding: var(--space-2);
+  border: 1.5px solid var(--border-medium);
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  text-align: center;
+  background: #ffffff;
+  transition: all var(--transition-fast);
+}
+
+.grade-btn.selected {
+  background-color: var(--color-primary);
+  color: #ffffff;
+  border-color: var(--color-primary);
+}
+
+/* Sync Conflict Resolution Dialogue */
+.conflict-card {
+  border: 2px solid var(--color-warning);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  background-color: #fffbeb;
+  margin-bottom: var(--space-4);
+}
+
+.conflict-diff-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+  margin-top: var(--space-3);
+}
+
+.diff-box {
+  background: #ffffff;
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-light);
+  font-size: var(--text-xs);
+}
