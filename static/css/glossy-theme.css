@@ -926,3 +926,114 @@ body {
   }
 }
 
+/* ==========================================================================
+   📱 Interactive Mobile Phone Shell Simulator on Desktop
+   ========================================================================== */
+
+.app-wrapper.mode-phone {
+  max-width: 430px;
+  margin: 18px auto 40px;
+  background: var(--bg-app);
+  border-radius: 46px;
+  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.75), 0 0 0 10px #1e293b, 0 0 0 12px rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+  min-height: 840px;
+}
+
+.app-wrapper.mode-phone .mobile-bottom-nav {
+  display: grid;
+  position: sticky;
+  bottom: 0;
+  max-width: 430px;
+  left: auto;
+  right: auto;
+  border-radius: 0 0 46px 46px;
+}
+
+.app-wrapper.mode-phone .phone-top-notch {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 22px 6px;
+  background: rgba(7, 21, 36, 0.98);
+  font-size: 12px;
+  font-weight: 700;
+  color: #f8fafc;
+  position: sticky;
+  top: 0;
+  z-index: 95;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.phone-island-pill {
+  width: 90px;
+  height: 18px;
+  background: #000000;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.view-mode-selector-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px;
+  background: rgba(15, 41, 66, 0.7);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.view-mode-btn {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #cbd5e1;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.view-mode-btn.active {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: #ffffff;
+  border-color: #10b981;
+  box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
+}
+
+/* On actual mobile screens, remove the simulator frame completely */
+@media (max-width: 768px) {
+  .app-wrapper.mode-phone {
+    max-width: 100%;
+    margin: 0;
+    border-radius: 0;
+    box-shadow: none;
+    border: none;
+    min-height: 100vh;
+  }
+
+  .app-wrapper.mode-phone .mobile-bottom-nav {
+    position: fixed;
+    max-width: 100%;
+    border-radius: 0;
+  }
+
+  .view-mode-selector-bar {
+    display: none; /* Hide on real mobile devices */
+  }
+
+  .app-wrapper.mode-phone .phone-top-notch {
+    display: none; /* Let native phone status bar show */
+  }
+}
+
+

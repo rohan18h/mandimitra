@@ -399,6 +399,7 @@ function MandiMitraApp() {
   const [theme, setTheme] = useState('light');
   const [role, setRole] = useState('farmer');
   const [farmerSubView, setFarmerSubView] = useState('home');
+  const [viewMode, setViewMode] = useState('phone');
 
   // Data Store
   const [districts, setDistricts] = useState(SEED_DATA.districts);
@@ -484,8 +485,38 @@ function MandiMitraApp() {
 
   return (
     <div style={{ minHeight: '100vh', position: 'relative' }}>
-      {/* Ambient Lighting Orbs */}
-      <div className="ambient-scene">
+      {/* 📱 Desktop View Mode Switcher */}
+      <div className="view-mode-selector-bar">
+        <span style={{ fontSize: '12px', color: '#94a3b8', fontWeight: 700 }}>
+          {lang === 'mr' ? 'दृश्य निवडा:' : (lang === 'hi' ? 'दृश्य चुनें:' : 'Preview Mode:')}
+        </span>
+        <button
+          className={`view-mode-btn ${viewMode === 'phone' ? 'active' : ''}`}
+          onClick={() => setViewMode('phone')}
+        >
+          📱 {lang === 'mr' ? 'मोबाईल ॲप दृश्य' : (lang === 'hi' ? 'मोबाइल ऐप दृश्य' : 'Mobile App View')}
+        </button>
+        <button
+          className={`view-mode-btn ${viewMode === 'desktop' ? 'active' : ''}`}
+          onClick={() => setViewMode('desktop')}
+        >
+          💻 {lang === 'mr' ? 'डेस्कटॉप दृश्य' : (lang === 'hi' ? 'डेस्कटॉप दृश्य' : 'Full Desktop View')}
+        </button>
+      </div>
+
+      <div className={`app-wrapper ${viewMode === 'phone' ? 'mode-phone' : 'mode-desktop'}`}>
+        {viewMode === 'phone' && (
+          <div className="phone-top-notch">
+            <span>09:41</span>
+            <div className="phone-island-pill">
+              <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#34d399' }}></div>
+            </div>
+            <span style={{ fontSize: '11px' }}>5G 100% 🔋</span>
+          </div>
+        )}
+
+        {/* Ambient Lighting Orbs */}
+        <div className="ambient-scene">
         <div className="ambient-light ambient-amber"></div>
         <div className="ambient-light ambient-emerald"></div>
         <div className="ambient-light ambient-indigo"></div>
@@ -764,6 +795,7 @@ function MandiMitraApp() {
           <span>{lang === 'mr' ? 'स्थिती' : (lang === 'hi' ? 'स्थिति' : 'Track')}</span>
         </button>
       </nav>
+      </div> {/* End app-wrapper */}
     </div>
   );
 }
