@@ -492,9 +492,9 @@ function MandiMitraApp() {
         </div>
       </div>
 
-      {viewMode === 'phone' ? (
-        <div className="phone-stage">
-          <div className="app-wrapper mode-phone">
+      <div className={viewMode === 'phone' ? 'phone-stage' : ''}>
+        <div className={`app-wrapper ${viewMode === 'phone' ? 'mode-phone' : 'mode-desktop'}`}>
+          {viewMode === 'phone' && (
             <div className="phone-top-notch">
               <span>09:41</span>
               <div className="phone-island-pill">
@@ -502,6 +502,7 @@ function MandiMitraApp() {
               </div>
               <span style={{ fontSize: '11px' }}>5G 100% 🔋</span>
             </div>
+          )}
 
         {/* Ambient Lighting Orbs */}
         <div className="ambient-scene">
@@ -2087,7 +2088,6 @@ function VoiceAssistantModal({ t, lang, setLang, getName, onClose, centres, crop
         </div>
       </div>
     </div>
-  </div>
   );
 }
 
