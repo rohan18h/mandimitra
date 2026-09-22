@@ -403,7 +403,7 @@ function MandiMitraApp() {
   const [theme, setTheme] = useState('light');
   const [role, setRole] = useState('farmer');
   const [farmerSubView, setFarmerSubView] = useState('home');
-  const [viewMode, setViewMode] = useState('phone');
+  const [viewMode, setViewMode] = useState('desktop');
 
   // Data Store
   const [districts, setDistricts] = useState(SEED_DATA.districts);
