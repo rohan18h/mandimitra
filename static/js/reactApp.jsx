@@ -403,7 +403,8 @@ function MandiMitraApp() {
   const [theme, setTheme] = useState('light');
   const [role, setRole] = useState('farmer');
   const [farmerSubView, setFarmerSubView] = useState('home');
-  const [viewMode, setViewMode] = useState('desktop');
+  const isMobileScreen = typeof window !== 'undefined' && window.innerWidth <= 768;
+  const [viewMode, setViewMode] = useState(isMobileScreen ? 'phone' : 'desktop');
 
   // Data Store
   const [districts, setDistricts] = useState(SEED_DATA.districts);
@@ -430,6 +431,17 @@ function MandiMitraApp() {
       try { navigator.vibrate(ms); } catch (e) {}
     }
   };
+
+  // Auto-adapt on mobile screen resize
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth <= 768 && viewMode !== 'phone') {
+        setViewMode('phone');
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [viewMode]);
 
   // Sync Python API
   useEffect(() => {
