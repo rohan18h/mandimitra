@@ -3,7 +3,7 @@
  * Enables instant offline loading for farmers in remote rural APMC mandis.
  */
 
-const CACHE_NAME = 'mandimitra-v1.1.0';
+const CACHE_NAME = 'mandimitra-v2.1.0';
 
 const PRECACHE_ASSETS = [
   './',
@@ -18,32 +18,30 @@ const PRECACHE_ASSETS = [
   './static/icons/icon-192.png',
   './static/icons/icon-512.png',
   './static/icons/icon-192.svg',
-  './static/icons/icon-512.svg',
-  'https://unpkg.com/react@18/umd/react.production.min.js',
-  'https://unpkg.com/react-dom@18/umd/react-dom.production.min.js',
-  'https://unpkg.com/@babel/standalone/babel.min.js'
+  './static/icons/icon-512.svg'
 ];
 
-// Install Event — Precaching Core App Shell
+// Install Event — Force skip waiting to activate latest version immediately
 self.addEventListener('install', (event) => {
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      console.log('[ServiceWorker] Pre-caching offline app shell');
-      return cache.addAll(PRECACHE_ASSETS.map(url => new Request(url, { mode: 'cors' }))).catch(err => {
-        console.warn('[ServiceWorker] Some pre-cache assets could not be loaded immediately:', err);
+      console.log('[ServiceWorker] Pre-caching v2.1.0');
+      return cache.addAll(PRECACHE_ASSETS.map(url => new Request(url, { cache: 'reload' }))).catch(err => {
+        console.warn('[ServiceWorker] Pre-cache warning:', err);
       });
-    }).then(() => self.skipWaiting())
+    })
   );
 });
 
-// Activate Event — Clean up stale caches
+// Activate Event — Delete ALL stale caches immediately
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames.map((cache) => {
           if (cache !== CACHE_NAME) {
-            console.log('[ServiceWorker] Clearing legacy cache:', cache);
+            console.log('[ServiceWorker] Purging old cache:', cache);
             return caches.delete(cache);
           }
         })
@@ -52,51 +50,28 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// Fetch Event — Stale-While-Revalidate for local assets, Network-First for API
+// Fetch Event — Always fetch from Network FIRST so latest updates reflect immediately
 self.addEventListener('fetch', (event) => {
-  const requestUrl = new URL(event.request.url);
-
-  // Skip non-GET requests
   if (event.request.method !== 'GET') {
     return;
   }
 
-  // Handle API requests with Network-First
-  if (requestUrl.pathname.startsWith('/api/')) {
-    event.respondWith(
-      fetch(event.request)
-        .then((response) => {
-          if (response && response.status === 200) {
-            const responseClone = response.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseClone));
-          }
-          return response;
-        })
-        .catch(() => caches.match(event.request))
-    );
-    return;
-  }
-
-  // Stale-While-Revalidate for app shell, scripts, CSS, and CDNs
   event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      const fetchPromise = fetch(event.request)
-        .then((networkResponse) => {
-          if (networkResponse && networkResponse.status === 200) {
-            const responseClone = networkResponse.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseClone));
-          }
-          return networkResponse;
-        })
-        .catch((err) => {
-          // If offline and requesting an HTML page, serve index.html
+    fetch(event.request)
+      .then((networkResponse) => {
+        if (networkResponse && networkResponse.status === 200) {
+          const responseClone = networkResponse.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseClone));
+        }
+        return networkResponse;
+      })
+      .catch(() => {
+        return caches.match(event.request).then((cached) => {
+          if (cached) return cached;
           if (event.request.mode === 'navigate') {
             return caches.match('./index.html') || caches.match('./');
           }
-          console.warn('[ServiceWorker] Fetch failed, serving cached fallback:', err);
         });
-
-      return cachedResponse || fetchPromise;
-    })
+      })
   );
 });
