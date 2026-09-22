@@ -348,6 +348,8 @@ const SEED_DATA = {
       id: "MM-RAH-2026-084",
       farmerId: "FARM-084",
       farmerName: "दत्तात्रय रामभाऊ पाटील",
+      farmerNameEn: "Dattatraya Rambhau Patil",
+      farmerNameHi: "दत्तात्रेय रामभाऊ पाटिल",
       phone: "9822345678",
       aadhaarMasked: "XXXX-XXXX-4812",
       district: "ahilyanagar",
@@ -367,6 +369,8 @@ const SEED_DATA = {
       id: "MM-RAH-2026-081",
       farmerId: "FARM-052",
       farmerName: "ज्ञानेश्वर विठ्ठल तांबे",
+      farmerNameEn: "Dnyaneshwar Vitthal Tambe",
+      farmerNameHi: "ज्ञानेश्वर विट्ठल तांबे",
       phone: "9421098765",
       aadhaarMasked: "XXXX-XXXX-2190",
       district: "ahilyanagar",
@@ -395,7 +399,7 @@ const SEED_DATA = {
 // Root Application Coordinator
 // -----------------------------------------------------------------------------
 function MandiMitraApp() {
-  const [lang, setLang] = useState('mr');
+  const [lang, setLang] = useState('en');
   const [theme, setTheme] = useState('light');
   const [role, setRole] = useState('farmer');
   const [farmerSubView, setFarmerSubView] = useState('home');
@@ -421,34 +425,6 @@ function MandiMitraApp() {
   const [isVoiceOpen, setIsVoiceOpen] = useState(false);
   const [toast, setToast] = useState(null);
 
-  // 📱 Mobile PWA Installation & Haptics
-  const [installPrompt, setInstallPrompt] = useState(null);
-  const [isInstalled, setIsInstalled] = useState(false);
-
-  useEffect(() => {
-    const handleBeforeInstall = (e) => {
-      e.preventDefault();
-      setInstallPrompt(e);
-    };
-    window.addEventListener('beforeinstallprompt', handleBeforeInstall);
-    if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
-      setIsInstalled(true);
-    }
-    return () => window.removeEventListener('beforeinstallprompt', handleBeforeInstall);
-  }, []);
-
-  const handleInstallClick = () => {
-    if (installPrompt) {
-      installPrompt.prompt();
-      installPrompt.userChoice.then((choiceResult) => {
-        if (choiceResult.outcome === 'accepted') {
-          showToast(lang === 'mr' ? '🌾 मंडीमित्र ॲप इन्स्टॉल झाले!' : '🌾 MandiMitra App Installed!');
-          setInstallPrompt(null);
-        }
-      });
-    }
-  };
-
   const triggerHaptic = (ms = 15) => {
     if (typeof navigator !== 'undefined' && navigator.vibrate) {
       try { navigator.vibrate(ms); } catch (e) {}
@@ -462,9 +438,9 @@ function MandiMitraApp() {
   }, []);
 
   useEffect(() => {
-    if (theme === 'dark') document.body.classList.add('theme-dark');
-    else document.body.classList.remove('theme-dark');
-  }, [theme]);
+    document.documentElement.lang = lang;
+    document.body.className = `lang-${lang} role-${role} ${theme === 'dark' ? 'theme-dark' : ''}`;
+  }, [lang, role, theme]);
 
   const t = useCallback(k => I18N[lang]?.[k] || I18N['en']?.[k] || k, [lang]);
   const getName = useCallback(obj => {
@@ -485,23 +461,35 @@ function MandiMitraApp() {
 
   return (
     <div style={{ minHeight: '100vh', position: 'relative' }}>
-      {/* 📱 Desktop View Mode Switcher */}
+      {/* 📱 SIH Prototype Preview & Device View Selector Bar */}
       <div className="view-mode-selector-bar">
-        <span style={{ fontSize: '12px', color: '#94a3b8', fontWeight: 700 }}>
-          {lang === 'mr' ? 'दृश्य निवडा:' : (lang === 'hi' ? 'दृश्य चुनें:' : 'Preview Mode:')}
-        </span>
-        <button
-          className={`view-mode-btn ${viewMode === 'phone' ? 'active' : ''}`}
-          onClick={() => setViewMode('phone')}
-        >
-          📱 {lang === 'mr' ? 'मोबाईल ॲप दृश्य' : (lang === 'hi' ? 'मोबाइल ऐप दृश्य' : 'Mobile App View')}
-        </button>
-        <button
-          className={`view-mode-btn ${viewMode === 'desktop' ? 'active' : ''}`}
-          onClick={() => setViewMode('desktop')}
-        >
-          💻 {lang === 'mr' ? 'डेस्कटॉप दृश्य' : (lang === 'hi' ? 'डेस्कटॉप दृश्य' : 'Full Desktop View')}
-        </button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <span style={{ fontSize: '12px', color: '#fbbf24', fontWeight: 800 }}>
+            🌾 SIH 2026 Prototype
+          </span>
+          <span style={{ fontSize: '11px', color: '#cbd5e1' }}>
+            ({lang === 'mr' ? 'थेट वेब ॲप — डाऊनलोडची आवश्यकता नाही' : (lang === 'hi' ? 'सीधा वेब ऐप — बिना किसी डाउनलोड' : 'Live Interactive Web App — No Download Required')})
+          </span>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <span style={{ fontSize: '12px', color: '#94a3b8', fontWeight: 700 }}>
+            {lang === 'mr' ? 'दृश्य निवडा:' : (lang === 'hi' ? 'दृश्य चुनें:' : 'Preview Mode:')}
+          </span>
+          <button
+            className={`view-mode-btn ${viewMode === 'phone' ? 'active' : ''}`}
+            onClick={() => setViewMode('phone')}
+            title="Mobile App Simulator View"
+          >
+            📱 {lang === 'mr' ? 'मोबाईल ॲप दृश्य' : (lang === 'hi' ? 'मोबाइल ऐप दृश्य' : 'Mobile App View')}
+          </button>
+          <button
+            className={`view-mode-btn ${viewMode === 'desktop' ? 'active' : ''}`}
+            onClick={() => setViewMode('desktop')}
+            title="Full Web Portal View"
+          >
+            💻 {lang === 'mr' ? 'वेब पोर्टल' : (lang === 'hi' ? 'वेब पोर्टल' : 'Full Web Portal')}
+          </button>
+        </div>
       </div>
 
       <div className={`app-wrapper ${viewMode === 'phone' ? 'mode-phone' : 'mode-desktop'}`}>
@@ -517,119 +505,108 @@ function MandiMitraApp() {
 
         {/* Ambient Lighting Orbs */}
         <div className="ambient-scene">
-        <div className="ambient-light ambient-amber"></div>
-        <div className="ambient-light ambient-emerald"></div>
-        <div className="ambient-light ambient-indigo"></div>
-      </div>
-
-      {/* Top Ticker Tape */}
-      <div className="ticker-tape-wrap">
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px', overflow: 'hidden', whiteSpace: 'nowrap' }}>
-          <span style={{ color: 'var(--accent-gold)', fontWeight: 800 }}>🌾 MSP Kharif 2026:</span>
-          <span className="ticker-item">सोयाबीन: <span className="ticker-rate-badge">₹4,892/Qt</span></span>
-          <span className="ticker-item">कापूस: <span className="ticker-rate-badge">₹7,121/Qt</span></span>
-          <span className="ticker-item">तूर: <span className="ticker-rate-badge">₹7,550/Qt</span></span>
-          <span className="ticker-item">हरभरा: <span className="ticker-rate-badge">₹5,440/Qt</span></span>
+          <div className="ambient-light ambient-amber"></div>
+          <div className="ambient-light ambient-emerald"></div>
+          <div className="ambient-light ambient-indigo"></div>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '11px', color: '#94a3b8' }}>
-          <span style={{ color: '#10b981' }}>●</span> Python STT & TTS Active
+
+        {/* Top Ticker Tape */}
+        <div className="ticker-tape-wrap">
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px', overflow: 'hidden', whiteSpace: 'nowrap' }}>
+            <span style={{ color: 'var(--accent-gold)', fontWeight: 800 }}>
+              {lang === 'mr' ? '🌾 MSP खरेदी दर २०२६:' : (lang === 'hi' ? '🌾 MSP खरीद दर 2026:' : '🌾 MSP Procurement Rates 2026:')}
+            </span>
+            <span className="ticker-item">{lang === 'mr' ? 'सोयाबीन' : (lang === 'hi' ? 'सोयाबीन' : 'Soybean')}: <span className="ticker-rate-badge">₹4,892/Qt</span></span>
+            <span className="ticker-item">{lang === 'mr' ? 'कापूस' : (lang === 'hi' ? 'कपास' : 'Cotton')}: <span className="ticker-rate-badge">₹7,121/Qt</span></span>
+            <span className="ticker-item">{lang === 'mr' ? 'तूर' : (lang === 'hi' ? 'अरहर/तूर' : 'Tur / Arhar')}: <span className="ticker-rate-badge">₹7,550/Qt</span></span>
+            <span className="ticker-item">{lang === 'mr' ? 'हरभरा' : (lang === 'hi' ? 'चना' : 'Gram / Chana')}: <span className="ticker-rate-badge">₹5,440/Qt</span></span>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '11px', color: '#94a3b8' }}>
+            <span style={{ color: '#10b981' }}>●</span> {lang === 'mr' ? 'आवाज सहाय्यक सक्रिय' : (lang === 'hi' ? 'आवाज़ सहायक सक्रिय' : 'Voice Assistant Active')}
+          </div>
         </div>
-      </div>
 
-      {/* Floating Glass Navigation Bar */}
-      <header className="floating-navbar">
-        <div className="navbar-glass-container">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <a href="#" className="brand-badge" onClick={(e) => { e.preventDefault(); setFarmerSubView('home'); }}>
-              <div className="brand-icon-gem">🌾</div>
-              <div>
-                <span style={{ color: 'var(--accent-gold)', fontWeight: 800 }}>Mandi</span>
-                <span style={{ fontWeight: 800 }}>Mitra</span>
-              </div>
-            </a>
-          </div>
-
-          {/* Role Switcher */}
-          <div className="role-segmented-control">
-            <button className={`role-tab-btn ${role === 'farmer' ? 'active' : ''}`} onClick={() => setRole('farmer')}>
-              👨‍🌾 {t('farmerRole')}
-            </button>
-            <button className={`role-tab-btn ${role === 'staff' ? 'active' : ''}`} onClick={() => setRole('staff')}>
-              🏢 {t('staffRole')}
-            </button>
-            <button className={`role-tab-btn ${role === 'admin' ? 'active' : ''}`} onClick={() => setRole('admin')}>
-              🏛️ {t('adminRole')}
-            </button>
-          </div>
-
-          {/* Header Controls */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            {/* Language Switcher */}
-            <div style={{ display: 'inline-flex', background: 'rgba(0,0,0,0.06)', borderRadius: 'var(--radius-pill)', padding: '2px' }}>
-              {['mr', 'hi', 'en'].map(l => (
-                <button
-                  key={l}
-                  onClick={() => setLang(l)}
-                  style={{
-                    padding: '4px 10px',
-                    borderRadius: 'var(--radius-pill)',
-                    border: 'none',
-                    fontSize: '12px',
-                    fontWeight: 700,
-                    background: lang === l ? 'var(--accent-gold)' : 'transparent',
-                    color: lang === l ? '#ffffff' : 'var(--text-dim)',
-                    cursor: 'pointer'
-                  }}
-                >
-                  {l === 'mr' ? 'मराठी' : (l === 'hi' ? 'हिन्दी' : 'EN')}
-                </button>
-              ))}
+        {/* Floating Glass Navigation Bar */}
+        <header className="floating-navbar">
+          <div className="navbar-glass-container">
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <a href="#" className="brand-badge" onClick={(e) => { e.preventDefault(); setFarmerSubView('home'); }}>
+                <div className="brand-icon-gem">🌾</div>
+                <div>
+                  <span style={{ color: 'var(--accent-gold)', fontWeight: 800 }}>Mandi</span>
+                  <span style={{ fontWeight: 800 }}>Mitra</span>
+                </div>
+              </a>
             </div>
 
-            {/* Dark / Light Toggle */}
-            <button
-              className="btn-glass"
-              onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
-              style={{ width: '36px', height: '36px', borderRadius: '50%', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-              title="Toggle Theme"
-            >
-              {theme === 'light' ? '🌙' : '☀️'}
-            </button>
-
-            {/* Voice Pill Button */}
-            <button
-              className="btn-core btn-gold"
-              onClick={() => setIsVoiceOpen(true)}
-              style={{ padding: '6px 14px', fontSize: '13px' }}
-            >
-              <Icons.Mic />
-              <span>{lang === 'mr' ? 'विचारा' : (lang === 'hi' ? 'बोलें' : 'Voice')}</span>
-            </button>
-          </div>
-        </div>
-      </header>
-
-      {/* Main Workspace Layout */}
-      <main style={{ maxWidth: '1280px', margin: '0 auto', padding: '24px 16px 80px', position: 'relative', zIndex: 1 }}>
-        {/* 📱 PWA Install Banner */}
-        {installPrompt && !isInstalled && (
-          <div className="mobile-install-banner">
-            <div className="mobile-install-info">
-              <img src="./static/icons/icon-192.png" alt="MandiMitra" className="mobile-install-icon" />
-              <div>
-                <div className="mobile-install-title">
-                  {lang === 'mr' ? '🌾 मंडीमित्र मोबाईल ॲप' : (lang === 'hi' ? '🌾 मंडीमित्र मोबाइल ऐप' : '🌾 MandiMitra Mobile App')}
-                </div>
-                <div className="mobile-install-desc">
-                  {lang === 'mr' ? 'ऑफलाईन वापर आणि थेट होम स्क्रीनवरून बुकिंगसाठी इन्स्टॉल करा' : (lang === 'hi' ? 'ऑफलाइन उपयोग व त्वरित बुकिंग हेतु इंस्टॉल करें' : 'Install for offline access & instant home screen booking')}
-                </div>
-              </div>
+            {/* Role Switcher */}
+            <div className="role-segmented-control">
+              <button className={`role-tab-btn ${role === 'farmer' ? 'active' : ''}`} onClick={() => setRole('farmer')}>
+                👨‍🌾 {t('farmerRole')}
+              </button>
+              <button className={`role-tab-btn ${role === 'staff' ? 'active' : ''}`} onClick={() => setRole('staff')}>
+                🏢 {t('staffRole')}
+              </button>
+              <button className={`role-tab-btn ${role === 'admin' ? 'active' : ''}`} onClick={() => setRole('admin')}>
+                🏛️ {t('adminRole')}
+              </button>
             </div>
-            <button className="mobile-install-btn" onClick={handleInstallClick}>
-              📲 {lang === 'mr' ? 'इन्स्टॉल करा' : (lang === 'hi' ? 'इंस्टॉल करें' : 'Install App')}
-            </button>
+
+            {/* Header Controls */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              {/* Language Switcher with English First */}
+              <div style={{ display: 'inline-flex', background: 'rgba(0,0,0,0.08)', borderRadius: 'var(--radius-pill)', padding: '2px', border: '1px solid rgba(255,255,255,0.15)' }}>
+                {[
+                  { code: 'en', label: 'English' },
+                  { code: 'mr', label: 'मराठी' },
+                  { code: 'hi', label: 'हिन्दी' }
+                ].map(item => (
+                  <button
+                    key={item.code}
+                    onClick={() => setLang(item.code)}
+                    style={{
+                      padding: '4px 10px',
+                      borderRadius: 'var(--radius-pill)',
+                      border: 'none',
+                      fontSize: '12px',
+                      fontWeight: 700,
+                      background: lang === item.code ? 'var(--accent-gold)' : 'transparent',
+                      color: lang === item.code ? '#ffffff' : 'var(--text-dim)',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s ease'
+                    }}
+                    title={`Switch language to ${item.label}`}
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Dark / Light Toggle */}
+              <button
+                className="btn-glass"
+                onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
+                style={{ width: '36px', height: '36px', borderRadius: '50%', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                title="Toggle Theme"
+              >
+                {theme === 'light' ? '🌙' : '☀️'}
+              </button>
+
+              {/* Voice Pill Button */}
+              <button
+                className="btn-core btn-gold"
+                onClick={() => setIsVoiceOpen(true)}
+                style={{ padding: '6px 14px', fontSize: '13px' }}
+              >
+                <Icons.Mic />
+                <span>{lang === 'mr' ? 'विचारा' : (lang === 'hi' ? 'बोलें' : 'Voice')}</span>
+              </button>
+            </div>
           </div>
-        )}
+        </header>
+
+        {/* Main Workspace Layout */}
+        <main style={{ maxWidth: '1280px', margin: '0 auto', padding: '24px 16px 80px', position: 'relative', zIndex: 1 }}>
 
         {role === 'farmer' && (
           <FarmerExperience
@@ -820,7 +797,7 @@ function FarmerExperience(props) {
         {/* Dynamic Appointment Banner */}
         <div className="hero-glow-card">
           <span className="pill-badge warning" style={{ marginBottom: '14px' }}>
-            {activeBooking ? '📍 ' + t('activeBooking') : '🌾 ' + (lang === 'mr' ? 'सुरुवात करा' : 'Start Here')}
+            {activeBooking ? '📍 ' + t('activeBooking') : '🌾 ' + (lang === 'mr' ? 'सुरुवात करा' : (lang === 'hi' ? 'शुरुआत करें' : 'Start Here'))}
           </span>
           <h2 style={{ fontSize: '2rem', marginBottom: '8px', color: '#ffffff', letterSpacing: '-0.02em' }}>
             {activeBooking
@@ -829,14 +806,14 @@ function FarmerExperience(props) {
           </h2>
           <p style={{ opacity: 0.9, marginBottom: '22px', fontSize: '0.96rem', maxWidth: '680px' }}>
             {activeBooking
-              ? (lang === 'mr' ? `टोकन क्रमांक: ${activeBooking.id}. कृपया मूळ ७/१२ उतारा सोबत आणा.` : `Token: ${activeBooking.id}. Please carry original 7/12 land extract.`)
+              ? (lang === 'mr' ? `टोकन क्रमांक: ${activeBooking.id}. कृपया मूळ ७/१२ उतारा सोबत आणा.` : (lang === 'hi' ? `टोकन संख्या: ${activeBooking.id}। कृपया मूल खसरा नकल साथ लाएं।` : `Token: ${activeBooking.id}. Please carry original 7/12 land extract.`))
               : t('noActiveBookingSub')}
           </p>
           <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
             {activeBooking ? (
               <button className="btn-core btn-gold" onClick={() => setSubView('token')}>
                 <Icons.Ticket />
-                <span>{lang === 'mr' ? 'माझे टोकन पावती पहा' : 'View My Token Pass'}</span>
+                <span>{lang === 'mr' ? 'माझे टोकन पावती पहा' : (lang === 'hi' ? 'मेरी टोकन पर्ची देखें' : 'View My Token Pass')}</span>
               </button>
             ) : (
               <button className="btn-core btn-gold" onClick={() => setSubView('centres')}>
@@ -933,7 +910,7 @@ function FarmerExperience(props) {
     return (
       <div>
         <button className="btn-core btn-glass" onClick={() => setSubView('home')} style={{ marginBottom: '18px' }}>
-          ← {lang === 'mr' ? 'मुख्यपृष्ठ' : 'Back to Home'}
+          ← {lang === 'mr' ? 'मुख्यपृष्ठ' : (lang === 'hi' ? 'मुख्यपृष्ठ' : 'Back to Home')}
         </button>
 
         <h1 style={{ fontSize: '2rem', marginBottom: '18px' }}>{t('searchCentres')}</h1>
@@ -1040,7 +1017,7 @@ function FarmerExperience(props) {
     return (
       <div style={{ maxWidth: '720px', margin: '0 auto' }}>
         <button className="btn-core btn-glass" onClick={() => setSubView('centres')} style={{ marginBottom: '18px' }}>
-          ← {lang === 'mr' ? 'केंद्र निवडीकडे परत' : 'Back to Centres'}
+          ← {lang === 'mr' ? 'केंद्र निवडीकडे परत' : (lang === 'hi' ? 'केंद्र सूची पर वापस' : 'Back to Centres')}
         </button>
 
         <div className="glass-box" style={{ padding: '28px' }}>
@@ -1059,7 +1036,9 @@ function FarmerExperience(props) {
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                 <span style={{ color: 'var(--emerald-500)', fontSize: '20px' }}>✓</span>
                 <div>
-                  <strong style={{ fontSize: '14px' }}>खरेदी हंगाम वैध (Procurement Season Active)</strong>
+                  <strong style={{ fontSize: '14px' }}>
+                    {lang === 'mr' ? 'खरेदी हंगाम वैध' : (lang === 'hi' ? 'खरीद सत्र वैध' : 'Procurement Season Active')}
+                  </strong>
                   <div style={{ fontSize: '12px', color: 'var(--text-dim)' }}>{crop.schemeName} (MSP ₹{crop.mspPerQuintal}/Qt)</div>
                 </div>
               </div>
@@ -1067,27 +1046,35 @@ function FarmerExperience(props) {
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                 <span style={{ color: 'var(--emerald-500)', fontSize: '20px' }}>✓</span>
                 <div>
-                  <strong style={{ fontSize: '14px' }}>७/१२ पीक नोंद व बँक आधार लिंक</strong>
-                  <div style={{ fontSize: '12px', color: 'var(--text-dim)' }}>४.५ एकर शेती नोंदणी उपलब्ध (Aadhaar Linked)</div>
+                  <strong style={{ fontSize: '14px' }}>
+                    {lang === 'mr' ? '७/१२ पीक नोंद व बँक आधार लिंक' : (lang === 'hi' ? 'खसरा फसल प्रविष्टि व आधार लिंक बैंक' : '7/12 Land Crop Entry & Aadhaar-Linked Bank')}
+                  </strong>
+                  <div style={{ fontSize: '12px', color: 'var(--text-dim)' }}>
+                    {lang === 'mr' ? '४.५ एकर शेती नोंदणी उपलब्ध (Aadhaar Linked)' : (lang === 'hi' ? '4.5 एकड़ भूमि पंजीकृत व आधार लिंक' : '4.5 Acres Farm Verified & Aadhaar Linked')}
+                  </div>
                 </div>
               </div>
 
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                 <span style={{ color: 'var(--emerald-500)', fontSize: '20px' }}>✓</span>
                 <div>
-                  <strong style={{ fontSize: '14px' }}>पारदर्शकता व १-सक्रिय टोकन मर्यादा</strong>
-                  <div style={{ fontSize: '12px', color: 'var(--text-dim)' }}>सध्या कोणतेही सक्रिय टोकन नाही (Fairness Limit Verified)</div>
+                  <strong style={{ fontSize: '14px' }}>
+                    {lang === 'mr' ? 'पारदर्शकता व १-सक्रिय टोकन मर्यादा' : (lang === 'hi' ? 'पारदर्शिता व 1-सक्रिय टोकन सीमा' : 'Anti-Hoarding & 1-Active Token Limit')}
+                  </strong>
+                  <div style={{ fontSize: '12px', color: 'var(--text-dim)' }}>
+                    {lang === 'mr' ? 'सध्या कोणतेही सक्रिय टोकन नाही (Fairness Limit Verified)' : (lang === 'hi' ? 'कोई अन्य सक्रिय टोकन नहीं (कोटा सत्यापित)' : 'No other active token. Verified under fair allocation quota.')}
+                  </div>
                 </div>
               </div>
             </div>
           </div>
 
           <div className="glass-subtle" style={{ padding: '16px', marginBottom: '22px', borderLeft: '4px solid var(--accent-gold)', fontSize: '12px', color: 'var(--text-sub)' }}>
-            <strong>⚖️ अंतिम मंजुरी अस्वीकरण:</strong> {t('disclaimer')}
+            <strong>⚖️ {lang === 'mr' ? 'अंतिम मंजुरी अस्वीकरण:' : (lang === 'hi' ? 'अंतिम स्वीकृति अस्वीकरण:' : 'Official Acceptance Disclaimer:')}</strong> {t('disclaimer')}
           </div>
 
           <button className="btn-core btn-gold" style={{ width: '100%', padding: '14px', fontSize: '15px' }} onClick={() => setSubView('booking')}>
-            <span>{lang === 'mr' ? 'सोयीची वेळ निवडा व टोकन बुक करा' : 'Proceed to Choose Time Slot'}</span>
+            <span>{lang === 'mr' ? 'सोयीची वेळ निवडा व टोकन बुक करा' : (lang === 'hi' ? 'समय स्लॉट चुनें व टोकन बुक करें' : 'Proceed to Choose Time Slot')}</span>
             <Icons.ArrowRight />
           </button>
         </div>
@@ -1105,7 +1092,7 @@ function FarmerExperience(props) {
       const newBooking = {
         id: `MM-${centre.id.toUpperCase()}-2026-${Math.floor(100 + Math.random() * 900)}`,
         farmerId: 'FARM-084',
-        farmerName: 'दत्तात्रय रामभाऊ पाटील',
+        farmerName: lang === 'en' ? 'Dattatraya Rambhau Patil' : (lang === 'hi' ? 'दत्तात्रेय रामभाऊ पाटिल' : 'दत्तात्रय रामभाऊ पाटील'),
         phone: '9822345678',
         aadhaarMasked: 'XXXX-XXXX-4812',
         district: centre.district,
@@ -1121,7 +1108,7 @@ function FarmerExperience(props) {
 
       setBookings(prev => [newBooking, ...prev]);
       setActiveBookingId(newBooking.id);
-      showToast(lang === 'mr' ? 'टोकन यशस्वीरित्या आरक्षित झाले!' : 'Token booked successfully!');
+      showToast(lang === 'mr' ? 'टोकन यशस्वीरित्या आरक्षित झाले!' : (lang === 'hi' ? 'टोकन सफलतापूर्वक आरक्षित हुआ!' : 'Token booked successfully!'));
       setSubView('token');
     };
 
@@ -1180,7 +1167,9 @@ function FarmerExperience(props) {
                       {isFull ? (
                         <span style={{ color: 'var(--ruby-500)', fontWeight: 700 }}>✕ {t('slotsFull')}</span>
                       ) : (
-                        <span style={{ color: 'var(--emerald-500)', fontWeight: 700 }}>✓ {remaining} जागा शिल्लक (Slots Left)</span>
+                        <span style={{ color: 'var(--emerald-500)', fontWeight: 700 }}>
+                          ✓ {remaining} {lang === 'mr' ? 'जागा शिल्लक' : (lang === 'hi' ? 'स्लॉट उपलब्ध' : 'Slots Left')}
+                        </span>
                       )}
                     </div>
                   </div>
@@ -1207,7 +1196,7 @@ function FarmerExperience(props) {
     return (
       <div style={{ maxWidth: '660px', margin: '0 auto' }}>
         <button className="btn-core btn-glass" onClick={() => setSubView('home')} style={{ marginBottom: '18px' }}>
-          ← {lang === 'mr' ? 'मुख्यपृष्ठ' : 'Back to Home'}
+          ← {lang === 'mr' ? 'मुख्यपृष्ठ' : (lang === 'hi' ? 'मुख्यपृष्ठ' : 'Back to Home')}
         </button>
 
         <div className="perforated-ticket">
@@ -1229,7 +1218,7 @@ function FarmerExperience(props) {
             </div>
             <div>
               <span style={{ color: 'var(--text-dim)' }}>Farmer:</span>
-              <div style={{ fontWeight: 700 }}>{booking.farmerName}</div>
+              <div style={{ fontWeight: 700 }}>{lang === 'en' ? (booking.farmerNameEn || booking.farmerName) : (lang === 'hi' ? (booking.farmerNameHi || booking.farmerName) : booking.farmerName)}</div>
             </div>
             <div>
               <span style={{ color: 'var(--text-dim)' }}>Crop & Qty:</span>
@@ -1297,12 +1286,12 @@ function FarmerExperience(props) {
     return (
       <div style={{ maxWidth: '740px', margin: '0 auto' }}>
         <button className="btn-core btn-glass" onClick={() => setSubView('home')} style={{ marginBottom: '18px' }}>
-          ← {lang === 'mr' ? 'मुख्यपृष्ठ' : 'Back to Home'}
+          ← {lang === 'mr' ? 'मुख्यपृष्ठ' : (lang === 'hi' ? 'मुख्यपृष्ठ' : 'Back to Home')}
         </button>
 
         <h1 style={{ fontSize: '2rem', marginBottom: '8px' }}>{t('timelineTitle')}</h1>
         <p style={{ fontSize: '0.9rem', color: 'var(--text-dim)', marginBottom: '22px' }}>
-          {trackedBooking.farmerName} — Token: {trackedBooking.id} ({getName(crop)} @ {getName(centre)})
+          {lang === 'en' ? (trackedBooking.farmerNameEn || trackedBooking.farmerName) : (lang === 'hi' ? (trackedBooking.farmerNameHi || trackedBooking.farmerName) : trackedBooking.farmerName)} — Token: {trackedBooking.id} ({getName(crop)} @ {getName(centre)})
         </p>
 
         <div className="glass-box" style={{ padding: '28px' }}>
@@ -1476,7 +1465,7 @@ function StaffDashboard({ t, lang, getName, centres, setCentres, bookings, setBo
                 <tr key={b.id} style={{ borderBottom: '1px solid var(--border-light)' }}>
                   <td style={{ padding: '14px 10px', fontWeight: 800, fontFamily: 'monospace', color: 'var(--primary-900)' }}>{b.id}</td>
                   <td style={{ padding: '14px 10px' }}>
-                    <div style={{ fontWeight: 700 }}>{b.farmerName}</div>
+                    <div style={{ fontWeight: 700 }}>{lang === 'en' ? (b.farmerNameEn || b.farmerName) : (lang === 'hi' ? (b.farmerNameHi || b.farmerName) : b.farmerName)}</div>
                     <div style={{ fontSize: '11px', color: 'var(--text-dim)' }}>📱 {b.phone}</div>
                   </td>
                   <td style={{ padding: '14px 10px' }}>{b.cropId} (~{b.estimatedQtyQuintals} Qt)</td>
@@ -1873,6 +1862,33 @@ function VoiceAssistantModal({ t, lang, setLang, getName, onClose, centres, crop
           </button>
         </div>
 
+        {/* Direct Language Switcher Inside Modal */}
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginBottom: '16px' }}>
+          {[
+            { code: 'en', label: 'English' },
+            { code: 'mr', label: 'मराठी' },
+            { code: 'hi', label: 'हिन्दी' }
+          ].map(item => (
+            <button
+              key={item.code}
+              onClick={() => setLang(item.code)}
+              className="btn-core"
+              style={{
+                padding: '4px 14px',
+                fontSize: '12px',
+                fontWeight: 700,
+                borderRadius: 'var(--radius-pill)',
+                background: lang === item.code ? 'var(--accent-gold)' : 'rgba(0,0,0,0.06)',
+                color: lang === item.code ? '#ffffff' : 'var(--text-sub)',
+                border: lang === item.code ? 'none' : '1px solid rgba(0,0,0,0.08)',
+                cursor: 'pointer'
+              }}
+            >
+              {item.label}
+            </button>
+          ))}
+        </div>
+
         <div style={{ fontSize: '12px', color: 'var(--text-dim)', background: 'rgba(0,0,0,0.06)', borderRadius: 'var(--radius-pill)', padding: '6px 14px', display: 'inline-block', marginBottom: '22px' }}>
           🔒 {t('privacyNote')}
         </div>
@@ -1948,7 +1964,7 @@ function VoiceAssistantModal({ t, lang, setLang, getName, onClose, centres, crop
         {responseText && (
           <div className="glass-subtle" style={{ padding: '18px', textAlign: 'left', background: 'rgba(245, 158, 11, 0.08)', border: '1px solid rgba(245, 158, 11, 0.35)', marginBottom: '18px' }}>
             <div style={{ fontSize: '11px', color: 'var(--accent-gold-hover)', fontWeight: 800, textTransform: 'uppercase' }}>
-              🏛️ अधिकृत उत्तर (Verified Response):
+              {lang === 'en' ? '🏛️ Official Verified Response:' : (lang === 'hi' ? '🏛️ अधिकृत उत्तर:' : '🏛️ अधिकृत उत्तर (Verified Response):')}
             </div>
             <div style={{ fontSize: '15px', fontWeight: 700, color: 'var(--text-main)', margin: '8px 0', lineHeight: 1.5 }}>
               {responseText}
@@ -1983,7 +1999,7 @@ function VoiceAssistantModal({ t, lang, setLang, getName, onClose, centres, crop
         {confirmationCard && (
           <div className="glass-subtle" style={{ padding: '16px', textAlign: 'left', border: '2px solid var(--accent-gold)', marginBottom: '18px' }}>
             <strong style={{ color: 'var(--accent-gold)', fontSize: '14px', display: 'block', marginBottom: '8px' }}>
-              ⚠️ टोकन आरक्षण पुष्टीकरण (Confirm Action)
+              {lang === 'en' ? '⚠️ Confirm Token Reservation' : (lang === 'hi' ? '⚠️ टोकन आरक्षण पुष्टि' : '⚠️ टोकन आरक्षण पुष्टीकरण (Confirm Action)')}
             </strong>
             <div style={{ fontSize: '13px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '14px' }}>
               <div>Centre: <strong>{confirmationCard.centreName}</strong></div>
@@ -1993,7 +2009,7 @@ function VoiceAssistantModal({ t, lang, setLang, getName, onClose, centres, crop
             </div>
             <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
               <button className="btn-core btn-glass" style={{ padding: '6px 12px', fontSize: '12px' }} onClick={() => setConfirmationCard(null)}>
-                ✕ Cancel
+                ✕ {lang === 'mr' ? 'रद्द करा' : (lang === 'hi' ? 'रद्द करें' : 'Cancel')}
               </button>
               <button
                 className="btn-core btn-emerald"
